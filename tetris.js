@@ -187,7 +187,7 @@ var pieces = [
     [I, "cyan"],
     [J, "blue"],
     [L, "orange"],
-    [O, "yeloow"],
+    [O, "yellow"],
     [S, "green"],
     [T, "purple"],
     [Z, "red"]
