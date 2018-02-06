@@ -1,6 +1,9 @@
 let canvas = document.getElementById('board');
 let ctx = canvas.getContext("2d");
-let linecount = document.getElementById('lines');
+// let linecount = document.getElementById('lines');
+let levelcount = document.getElementById('level');
+let scorecount = document.getElementById('score');
+
 let clear = window.getComputedStyle(canvas).getPropertyValue('background-color');
 let width = 10;
 let height = 20;
@@ -117,6 +120,7 @@ Piece.prototype.rotate = function(){
 
     let lines = 0;
     let score = 0;
+    let level = 0;
     let done = false;
       
     Piece.prototype.lock = function(){
@@ -156,10 +160,13 @@ Piece.prototype.rotate = function(){
       if(nlines > 0){
           lines += nlines;
           score += nlines * 100
+          level += nlines;
           drawBoard();
         //   linecount.textContent = "Lines: " + lines;
-          linecount.textContent = "Score: " + score;          
-      }
+          scorecount.textContent = "Score: " + score;          
+          levelcount.textContent = "Level: " + level;          
+          
+        }
 
 };
 
@@ -187,7 +194,7 @@ Piece.prototype.draw = function(ctx){
 };
 
 let pieces = [
-    [I, "cyan"],
+    [I, "DarkRed"],
     [J, "blue"],
     [L, "orange"],
     [O, "yellow"],
@@ -279,7 +286,9 @@ document.body.addEventListener("keydown", function(e){
 
     piece = newPiece();
     drawBoard();
-    linecount.textContent = "Score: 0";
+    scorecount.textContent = "Score: 0";
+    levelcount.textContent = "Level: 0";
+    
     main();
 
 
