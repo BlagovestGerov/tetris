@@ -1,30 +1,30 @@
-var canvas = document.getElementById('board');
-var ctx = canvas.getContext("2d");
-var linecount = document.getElementById('lines');
-var clear = window.getComputedStyle(canvas).getPropertyValue('background-color');
-var width = 10;
-var height = 20;
-var tilesz = 24;
+let canvas = document.getElementById('board');
+let ctx = canvas.getContext("2d");
+let linecount = document.getElementById('lines');
+let clear = window.getComputedStyle(canvas).getPropertyValue('background-color');
+let width = 10;
+let height = 20;
+let tilesz = 24;
 
 canvas.width = width * tilesz;
 canvas.height = height * tilesz;
 
-var board = [];
-for ( var r = 0; r < height; r++){
+let board = [];
+for ( let r = 0; r < height; r++){
     board[r] = [];
-    for (var c = 0; c < width; c++){
+    for (let c = 0; c < width; c++){
         board[r][c] = "";
     }
 }
 
 function newPiece(){
-    var p = pieces[parseInt(Math.random() * pieces.length, 10)];
+    let p = pieces[parseInt(Math.random() * pieces.length, 10)];
     return new Piece(p[0], p[1]);
 }
 
 function drawSquare(x, y){
     ctx.fillRect(x * tilesz, y * tilesz, tilesz, tilesz);
-    var ss = ctx.strokeStyle;
+    let ss = ctx.strokeStyle;
     ctx.strokeStyle = "#555";
     ctx.strokeRect(x * tilesz, y * tilesz, tilesz, tilesz);
     ctx.strokeStyle = "#888";
@@ -44,8 +44,8 @@ function Piece(patterns, color){
 }
 
 Piece.prototype.rotate = function(){
-    var nudge = 0;
-    var nextpat = this.patterns[(this.patterni + 1) % this.patterns.length];
+    let nudge = 0;
+    let nextpat = this.patterns[(this.patterni + 1) % this.patterns.length];
 
     if(this._collides(0, 0, nextpat)){
         //check kickback
@@ -62,17 +62,17 @@ Piece.prototype.rotate = function(){
 
 };
 
-    var WALL = 1;
-    var BLOCK = 2;
+    let WALL = 1;
+    let BLOCK = 2;
     Piece.prototype._collides = function(dx, dy, pat){
-        for(var ix=0; ix < pat.length; ix++){
-            for ( var iy = 0; iy < pat.length; iy++){
+        for(let ix=0; ix < pat.length; ix++){
+            for ( let iy = 0; iy < pat.length; iy++){
                 if(!pat[ix][iy]){
                     continue;
                 }
 
-                var x = this.x + ix + dx;
-                var y = this.y + iy + dy;
+                let x = this.x + ix + dx;
+                let y = this.y + iy + dy;
                 if(y >= height || x < 0 || x >= width){
                     return WALL;
                 }
@@ -115,12 +115,13 @@ Piece.prototype.rotate = function(){
         }
     };
 
-    var lines = 0;
-    var done = false;
+    let lines = 0;
+    let score = 0;
+    let done = false;
       
     Piece.prototype.lock = function(){
-          for(var ix = 0; ix < this.pattern.length; ix++){
-              for(var iy = 0; iy < this.pattern.length; iy++){
+          for(let ix = 0; ix < this.pattern.length; ix++){
+              for(let iy = 0; iy < this.pattern.length; iy++){
                   if(!this.pattern[ix][iy]){
                       continue;
                   }
@@ -134,19 +135,19 @@ Piece.prototype.rotate = function(){
                   board[this.y + iy][this.x + ix] = this.color;
               }
           }
-          var nlines = 0;
-          for(var y = 0; y < height; y++){
-            var line = true; 
-            for (var x = 0; x < width; x++){
+          let nlines = 0;
+          for(let y = 0; y < height; y++){
+            let line = true; 
+            for (let x = 0; x < width; x++){
                   line = line && board[y][x] !== "";
               }
               if(line){
-                  for(var y2 = y; y2 > 1; y2--){
-                      for(var x = 0; x < width; x++){
+                  for(let y2 = y; y2 > 1; y2--){
+                      for(let x = 0; x < width; x++){
                       board[y2][x] = board[y2 - 1][x];
                   }
               }
-              for(var x = 0; x < width; x++){
+              for(let x = 0; x < width; x++){
                   board[0][x] = "";
               }
               nlines++;
@@ -154,19 +155,21 @@ Piece.prototype.rotate = function(){
       }
       if(nlines > 0){
           lines += nlines;
+          score += nlines * 100
           drawBoard();
-          linecount.textContent = "Lines: " + lines;
+        //   linecount.textContent = "Lines: " + lines;
+          linecount.textContent = "Score: " + score;          
       }
 
 };
 
 Piece.prototype._fill = function(color){
-    var fs = ctx.fillStyle;
+    let fs = ctx.fillStyle;
     ctx.fillStyle = color;
-    var x = this.x;
-    var y = this.y;
-    for(var ix = 0; ix < this.pattern.length; ix++){
-        for(var iy = 0; iy < this.pattern.length; iy++){
+    let x = this.x;
+    let y = this.y;
+    for(let ix = 0; ix < this.pattern.length; ix++){
+        for(let iy = 0; iy < this.pattern.length; iy++){
             if(this.pattern[ix][iy]){
                 drawSquare(x + ix, y + iy);
             }
@@ -183,7 +186,7 @@ Piece.prototype.draw = function(ctx){
     this._fill(this.color);
 };
 
-var pieces = [
+let pieces = [
     [I, "cyan"],
     [J, "blue"],
     [L, "orange"],
@@ -193,10 +196,10 @@ var pieces = [
     [Z, "red"]
 ];
 
-var piece = null;
+let piece = null;
 
-var dropStart = Date.now();
-var downI = {};
+let dropStart = Date.now();
+let downI = {};
 
 document.body.addEventListener("keydown", function(e){
     if(downI[e.keyCode] !== null){
@@ -237,9 +240,9 @@ document.body.addEventListener("keydown", function(e){
     }
 
     function drawBoard(){
-        var fs = ctx.fillStyle;
-        for( var y = 0; y < height; y++){
-            for(var x = 0; x < width; x++){
+        let fs = ctx.fillStyle;
+        for( let y = 0; y < height; y++){
+            for(let x = 0; x < width; x++){
                 ctx.fillStyle = board[y][x] || clear;
                 drawSquare(x, y, tilesz, tilesz);
             }
@@ -247,11 +250,23 @@ document.body.addEventListener("keydown", function(e){
         ctx.fillStyle = fs;
     }
 
-   function main() {
-	var now = Date.now();
-	var delta = now - dropStart;
+    let speed = 1000
 
-	if (delta > 1000) {
+    
+   function main() {
+	let now = Date.now();
+    let delta = now - dropStart;
+    let score = -1;
+
+
+    if (lines > 10 ){
+
+        lines = lines % 10
+        speed = speed - 100;
+        
+    }
+
+	if (delta > speed) {
 		piece.down();
 		dropStart = now;
 	}
@@ -264,7 +279,7 @@ document.body.addEventListener("keydown", function(e){
 
     piece = newPiece();
     drawBoard();
-    linecount.textContent = "Lines: 0";
+    linecount.textContent = "Score: 0";
     main();
 
 
