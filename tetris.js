@@ -160,7 +160,6 @@ Piece.prototype.rotate = function(){
       if(nlines > 0){
           lines += nlines;
           score += nlines * 100
-          level += nlines;
           drawBoard();
         //   linecount.textContent = "Lines: " + lines;
           scorecount.textContent = "Score: " + score;          
@@ -269,6 +268,7 @@ document.body.addEventListener("keydown", function(e){
     if (lines > 10 ){
 
         lines = lines % 10
+        level += 1
         speed = speed - 100;
         
     }
